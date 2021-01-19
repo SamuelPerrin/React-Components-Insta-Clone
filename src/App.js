@@ -31,13 +31,28 @@ const App = () => {
         - if the `id` of the post matches `postId`, return a new post object with the desired values (use the spread operator).
         - otherwise just return the post object unchanged.
      */
-    setPosts(posts.map(post => post.id === postId ? {...post, likes: post.likes + 1} : post))
+    
+    setPosts(posts.map(post => {
+      if (post.id === postId && !post.liked) {
+        return {...post, likes: post.likes + 1, liked: true};
+      } else if (post.id === postId && post.liked) {
+        return {...post, likes: post.likes - 1, liked: false};
+      } else {
+        return post;
+      }
+    }))
   };
+  const search = query => {
+    setPosts(posts.filter(post => {
+      console.log(post.username,query,post.username.includes(query))
+      return post.username.includes(query)
+    }))
+  }
 
   return (
     <div className='App'>
       {/* Add SearchBar and Posts here to render them */}
-      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+      <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} search={search}/>
       <Posts posts={posts} likePost={likePost} />
       {/* Check the implementation of each component, to see what props they require, if any! */}
     </div>
